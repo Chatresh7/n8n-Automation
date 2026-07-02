@@ -1,0 +1,230 @@
+{
+  "name": "Email Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5b6b4f8b-8095-461e-8ef6-1d3b00827e6b",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        -464
+      ],
+      "id": "a2aac879-9dc8-4f7a-857d-2ebb9eeea440",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mGG6Mr2KT4Ji9t1w",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        288
+      ],
+      "id": "4d25f2fb-ad52-442b-a940-94e997b5d984",
+      "name": "Send",
+      "webhookId": "e250e8a1-e587-42c3-a082-1080c7da7ada",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Dr9FXS5W4IFEmX7q",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 5,
+        "filters": {
+          "readStatus": "unread"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        288
+      ],
+      "id": "d3f7c769-9d67-4628-8fa9-f439ad914ae1",
+      "name": "Unread",
+      "webhookId": "5dd5c9ce-fd21-411c-8c1d-3ce1d081f980",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Dr9FXS5W4IFEmX7q",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        64,
+        288
+      ],
+      "id": "3b9d7c6a-082a-43b7-9ca3-bd108d60d400",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "gfg8c3KVmoQVjUek",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message_ID', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        336,
+        288
+      ],
+      "id": "de9c6057-e0f7-45c1-a9b6-4ba5cc1e31db",
+      "name": "Reply to a message in Gmail",
+      "webhookId": "df94db67-ce35-4a9d-9fcc-09b288220d28",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Dr9FXS5W4IFEmX7q",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0ef39aae-c049-42aa-8dac-2f067cd89ece",
+      "name": "Email"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "query": "reply to all my unread emails."
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Send": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unread": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply to a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b80bed2d-53ca-4829-869a-0c7474ca6a8d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "55df3ce4f7a1eae92e0821e735d280962ce9607f6133630bd6041cbc1a42ad25"
+  },
+  "nodeGroups": [],
+  "id": "lUt6oECHzQpOFUNH",
+  "tags": []
+}

@@ -1,0 +1,542 @@
+{
+  "name": "Supervisor Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "57d6c8ca-b702-4124-a2f8-756a30c90158",
+      "name": "When chat message received",
+      "webhookId": "5dc815dd-da6c-4e5d-ad9c-1d03fc107ceb"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        272
+      ],
+      "id": "7c9ef4ad-6a59-496e-aee8-8a239fca22e1",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "gfg8c3KVmoQVjUek",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 3
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        144,
+        272
+      ],
+      "id": "41ce9392-e5c1-4581-8b40-3dae40833bbf",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        272,
+        272
+      ],
+      "id": "0bae6137-1c68-417b-a776-287bf714e266",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Search Google.\n\nReturn only the top 3 search results.\n\nEach result should contain:\n- title\n- snippet\n- link\n\nNever return metadata.\nNever return JSON.",
+        "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "locationSettings": {},
+        "languageSettings": {},
+        "searchOptions": {},
+        "timeFilters": {},
+        "pagination": {},
+        "advancedOptions": {},
+        "requestOptions": {}
+      },
+      "type": "@searchapi/n8n-nodes-searchapi.searchApiTool",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -368
+      ],
+      "id": "48766ba8-2dc8-4103-8fa3-634b3d29da79",
+      "name": "Google Search",
+      "credentials": {
+        "searchApi": {
+          "id": "jp2sWPN52ujPjXpc",
+          "name": "SearchApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Query__q_', ``, 'string') }}",
+        "location": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Location__location_', ``, 'string') }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApiTool",
+      "typeVersion": 1,
+      "position": [
+        416,
+        272
+      ],
+      "id": "ce96e832-6e0d-4480-9bc4-3409b1f3086e",
+      "name": "Google search in SerpApi",
+      "credentials": {
+        "serpApi": {
+          "id": "CMWnSnfDxtnA1MR7",
+          "name": "SerpApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -368
+      ],
+      "id": "7b6bc8b3-c633-42ea-a850-8b694279765f",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "SK6a2Ucz9sgTbgXe",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Whenever Google Search is used,\nALWAYS call the Gemini Summarizer tool next.\n\nNever answer directly from the search results.\n\nUse Gemini to summarize the search output before responding."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGeminiTool",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        -368
+      ],
+      "id": "141be5d2-d4c7-458c-a99f-17092cb98005",
+      "name": "Message a model in Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mGG6Mr2KT4Ji9t1w",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        -352
+      ],
+      "id": "3754f8e7-5939-451f-8505-cad06d78173f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "mGG6Mr2KT4Ji9t1w",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# ROLE\nYou are an AI agent called CHIKU.\nYour job is to orchestrate the activities between\ndifferent agents and then formulate a friendly response\nback to the user.\nYou should never write emails, create content, create summaries yourself. Your job is to call agents and tools in the correct sequence.\n\n# ADDITIONAL INFORMATION\n- You are talking to Chatresh.\n- The current date and time is {{$now.toString()}}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "48a06f6d-c638-41c3-a601-be1f72b117d1",
+      "name": "Supervisor"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool for any email related actions.",
+        "workflowId": {
+          "__rl": true,
+          "value": "lUt6oECHzQpOFUNH",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/lUt6oECHzQpOFUNH",
+          "cachedResultName": "Email Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        272
+      ],
+      "id": "6449e0e9-bdb6-460c-acdf-a5e17e897b9f",
+      "name": "Email"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool for all contact related actions.",
+        "workflowId": {
+          "__rl": true,
+          "value": "pygZ4LSLh5P99ldh",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/pygZ4LSLh5P99ldh",
+          "cachedResultName": "Contacts Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        272
+      ],
+      "id": "296a639c-7fc2-47ac-999e-fce16d1ce7c4",
+      "name": "Contacts"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool for any any calendar related actions.",
+        "workflowId": {
+          "__rl": true,
+          "value": "Lhp96zC5JjVeZdoG",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Lhp96zC5JjVeZdoG",
+          "cachedResultName": "Calendar Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        272
+      ],
+      "id": "58e47f42-35f9-4374-9c28-08709bda2c41",
+      "name": "Calendar"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool for any creative writing actions.",
+        "workflowId": {
+          "__rl": true,
+          "value": "7IVRUXXVOP7j9owL",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/7IVRUXXVOP7j9owL",
+          "cachedResultName": "Content Creator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        272
+      ],
+      "id": "65dcee42-3e8d-4cbf-a5ee-9a62cf8a40c7",
+      "name": "Content Creator"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3-haiku",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        0,
+        272
+      ],
+      "id": "bbb867ee-11ae-4e2a-82b7-e9f4b739eab7",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "TU1S9mGTkmsWPpXP",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool when asked questions from our own knowledge base.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-masterclass-new",
+          "mode": "list",
+          "cachedResultName": "n8n-masterclass-new"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        992,
+        272
+      ],
+      "id": "fd160956-f5dd-4152-a140-301bc97f6c08",
+      "name": "Knowledge Base",
+      "credentials": {
+        "pineconeApi": {
+          "id": "nPOfSZBTbfhl85K0",
+          "name": "Pinecone account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        480
+      ],
+      "id": "ac1e04a4-a2ec-4d10-a6dd-2ace031d4f40",
+      "name": "Embeddings HuggingFace Inference",
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "15l8YaPsYinidrb2",
+          "name": "Hugging Face account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Search": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Google search in SerpApi": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Message a model in Google Gemini": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Email": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacts": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Creator": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Base": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supervisor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Knowledge Base",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ff839d82-b601-4ad5-95ca-fe80e26e5e6a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "55df3ce4f7a1eae92e0821e735d280962ce9607f6133630bd6041cbc1a42ad25"
+  },
+  "nodeGroups": [],
+  "id": "BRcwN0eNC0W26jgW",
+  "tags": []
+}
