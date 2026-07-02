@@ -305,7 +305,7 @@ This project is licensed under the MIT License.
 **Chatresh Konchada**
 
 - GitHub: https://github.com/Chatresh7
-- LinkedIn: https://www.linkedin.com/in/chatresh-konchada/
+- LinkedIn: https://www.linkedin.com/in/chatresh-konchada-6075692aa/
 
 ---
 
